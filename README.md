@@ -1,21 +1,36 @@
-# shitty
-A very unfinished terminal emulator for the browser.  
-Built with PHP + JavaScript.
+<div style="text-align: center;">
+    <img src="public/images/logo.png" width="200px" alt="shitty logo">
+</div>
 
-## Status
-⚠️ This is just a toy project, not production-ready.  
-Expect bugs, missing features, and general brokenness.
+# 💩 shitty – Terminal Emulator
+A playful, browser-based terminal emulator.
 
-## Features (so far)
-- Basic UI for a "terminal" in the browser
-- Some commands kinda work
+---
 
-## Goals (maybe, if I ever finish)
-- File manager integration
-- Database-backed command history
-- More realistic terminal behavior
+## ⚠️Status
+This is just a toy project — **not production-ready**.  
+Expect bugs, missing features, and the occasional *shitty* behavior.
+---
 
-## How to run
+## ✨Features
+- Basic terminal UI
+- Built-in commands:
+    - `hello`
+    - `clear`
+    - `date`
+    - `commands` (lists available commands)
+
+---
+
+## 🎯Goals
+- Add more commands
+- Integrate a file manager
+- Store command history in a database
+- Improve realism of terminal behavior
+
+---
+
+## 🚀How to Run
 1. Clone the repo:
    ```bash
    git clone https://github.com/yourusername/shitty.git

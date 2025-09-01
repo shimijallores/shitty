@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Beau+Rivage&family=MonteCarlo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 
 @import 'tailwindcss';
 
@@ -10,6 +10,19 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-beau: "Beau Rivage", sans-serif;
-    --font-monte: "MonteCarlo", sans-serif;
+    --font-source: "Source Code Pro", sans-serif;
+}
+
+@layer base {
+    html, body, #app {
+        @apply w-full h-svh flex justify-center items-center font-source;
+    }
+
+    .p-terminal {
+        @apply w-full !h-svh;
+    }
+
+    .p-terminal-prompt-label {
+        @apply text-green-600;
+    }
 }
