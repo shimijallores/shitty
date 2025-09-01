@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<div style="text-align: center; display: flex; justify-content: center;">
     <img src="public/images/logo.png" width="200px" alt="shitty logo">
 </div>
 
@@ -33,4 +33,4 @@ Expect bugs, missing features, and the occasional *shitty* behavior.
 ## 🚀How to Run
 1. Clone the repo:
    ```bash
-   git clone https://github.com/yourusername/shitty.git
+   git clone https://github.com/shimijallores/shitty.git
