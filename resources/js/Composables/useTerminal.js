@@ -4,9 +4,19 @@ import TerminalService from "primevue/terminalservice";
 export function useTerminal() {
     const key = ref(0);
 
-    const commandHandler = (input) => {
+    const commandHandler = async (input) => {
         let response;
         switch (input) {
+            case "ls":
+                try {
+                    const res = await fetch("api/files");
+                    const data = await res.json();
+
+                    response = data.map((item) => item.name).join("\n");
+                } catch (err) {
+                    response = `Error fetching files ${err}`;
+                }
+                break;
             case "hello":
                 response = "👋 Hi! Visit for more:  github.com/shimijallores";
                 break;

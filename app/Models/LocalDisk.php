@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LocalDisk extends Model
 {
-    protected $fillable = ['name', 'type'];
+    use HasFactory;
+
+    protected $fillable = ['name', 'type', 'parent_id'];
 
     public function parent(): BelongsTo
     {
