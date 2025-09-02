@@ -6,15 +6,65 @@ export function useTerminal() {
 
     const commandHandler = async (input) => {
         let response;
-        switch (input) {
+
+        let inputArray = input.split(" ");
+        let [command, argument] = inputArray;
+
+        switch (command) {
             case "ls":
                 try {
                     const res = await fetch("api/files");
                     const data = await res.json();
 
                     response = data.map((item) => item.name).join("\n");
-                } catch (err) {
-                    response = `Error fetching files ${err}`;
+                } catch (e) {
+                    response = `Error fetching files ${e}`;
+                }
+                break;
+            case "mkdir":
+                if (!argument) {
+                    response = "Enter a valid folder name";
+                    break;
+                }
+
+                try {
+                    const res = await fetch("api/folders", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ name: argument }),
+                    });
+
+                    response = `Directory ${argument
+                        .toLowerCase()
+                        .trim()} created`;
+                } catch (e) {
+                    response = `Failed to create directory ${argument
+                        .toLowerCase()
+                        .trim()}`;
+                }
+                break;
+            case "touch":
+                if (!argument) {
+                    response = "Enter a valid file name";
+                    break;
+                }
+
+                try {
+                    const res = await fetch("api/files", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ name: argument }),
+                    });
+
+                    response = `File ${argument.toLowerCase().trim()} created`;
+                } catch (e) {
+                    response = `Failed to create file ${argument
+                        .toLowerCase()
+                        .trim()}`;
                 }
                 break;
             case "hello":
@@ -26,11 +76,48 @@ export function useTerminal() {
             case "date":
                 response = new Date().toLocaleString();
                 break;
-            case "commands":
-                response = "Available commands: hello, date, help, clear";
+            case "estephanie":
+                response = `
+                    ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⡿⠟⢿⣿⣿⣛⣛⣛⠛⠿⣿⣯⠈⣈⣤⡤⠤⢈⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⠟⢿⣿⣿⣿⠿⠿⠿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⡿⢀⣿⣿⣿
+                    ⣿⣿⣿⣿⡁⢨⣤⣴⣿⣿⣿⠉⣿⣿⣿⣿⡄⢸⣿⡇⢉⣁⣀⠐⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠻⣿⠁⣄⠙⢿⡗⢸⣿⣿⣶⡌⢻⡟⢀⣿⣿⠏⠀⢿⣿⣿⠇⢸⣿⣿⣿
+                    ⣿⣿⣿⣿⡇⠸⣿⠿⢿⣿⣿⠐⣿⣿⣿⣿⠃⣼⣿⣿⠈⣿⣿⣿⣿⣦⡌⢿⣿⣿⣿⣿⣿⣿⣿⣤⣉⣴⣿⡇⢸⣿⠘⣿⣿⣿⠇⢸⡇⢘⡿⢁⣴⡀⣾⣿⣿⣷⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⡄⢲⣶⣾⣿⣿⣦⣭⣉⣉⣩⣼⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠏⣸⣿⣦⣙⣛⣉⣴⣿⣷⣈⣠⣾⣿⡀⢿⣿⣿⠛⠛⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣷⣈⣀⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⡟⡃⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⢹⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠻⣿⣿
+                    ⠃⣤⣌⠙⠻⢏⣴⡇⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠉⣴⡍⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢁⣴⣿⣧⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⢠⠙⣿⣿⡿⢋⡴⢋⣾⣿⣿
+                    ⣦⠙⢿⣿⣷⣿⣿⢡⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⢰⣿⣿⣦⡈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋⣠⣿⣿⣿⣿⣦⠘⣿⣿⣿⣿⣿⣿⣿⣿⣧⠈⣧⡈⠛⢡⠎⣰⣿⣿⣿⣿
+                    ⣿⣷⣦⣉⠛⣿⡇⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣾⣿⣿⣿⣿⣦⢸⠻⠿⠿⠿⠿⠿⠿⠇⢰⣿⣿⣿⣿⣿⣿⡄⢻⣿⣿⣿⣿⣿⣿⣿⣿⣦⠙⣷⡾⢃⣾⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣯⣼⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿⠇⢸⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣶⣶⣶⣶⣶⣾⣿⣿⣿⣿⣿⣿⣷⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠹⢣⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⣿⠟⣛⠻⢋⣵⠀⣿⣿⣿⠇⢼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡂⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⣿⡀⣿⣷⣿⢋⣾⣿⣿⣿⡆⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠻⢿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⡟⢿⣿⣿⣿⣧⡈⠛⣡⣿⣿⣿⣿⣿⣿⠎⣻⣿⣿⡇⠀⠀⢹⣿⣿⣿⣿⢿⣿⣿⣿⣿⡁⠄⢀⣿⣿⣿⣿⡿⣿⣿⣿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⡍⣛⠋⠀⢰⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣏⣉⣉⠀⣹⣿⣿⡿⠷⣶⣿⣿⣿⠟⢀⡉⢿⣿⣿⣿⣿⣿⡿⢿⠟⠛⣻⣇⢠⣬⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⡄⠟⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⢀⡿⠑⣋⡄⣼⣿⣿⣿⣯⣴⣿⣿⣤⣽⣿⣿⣿⣿⣀⣴⣮⣤⣾⠇⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢁⣠⠈⢷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢀⣍⣙⡉⢹⣿⣿⡿⠿⣿⣿⣿⡿⣡⠂⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⣿⡟⢠⠙⡿⠉⠀⣿⣿⣿⣿⣷⣦⡙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⣼⣿⣿⣿⣿⣿⣿⠀⣶⣄⢙⢋⣼⢏⣼⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⠁⣌⠙⠛⠇⠸⠁⠀⣰⢡⣿⣿⣿⣿⣿⣿⣷⣤⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠉⢿⣿⣿⣿⣿⣿⣧⠈⢿⣿⣿⢇⣼⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⡆⢻⡇⠐⠀⠀⠀⢠⠃⣾⣿⣿⣿⣿⠋⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠻⣿⣿⣿⣿⣿⣷⣤⡙⢋⣼⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⡌⠁⢀⡆⠀⠀⡎⣼⣿⣿⣿⠿⢁⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⠘⢿⣿⣿⣿⣿⣿⣯⣾⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣦⡘⠃⠀⡸⣰⣿⣿⡟⢋⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿
+                    ⣿⣿⣿⣿⣿⣿⠛⢿⣦⣄⢡⣿⡿⠏⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣤⠘⢿⣿⣿⣿⣿⣿⠿⠻⠿⠿⠟⣡⡆
+                    ⣿⣿⣿⣿⣿⣿⣆⠀⡙⠿⠀⡿⢁⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣬⠿⣿⣿⣿⣧⠐⣿⣶⣶⣾⡿⣸
+                    ⣿⣿⣿⣿⣿⣿⣿⣧⡊⢷⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡈⠿⣿⣿⣧⡌⠻⠿⢿⢡⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⣿⣿⢀⠀⢿⣿⣿⣿⣿⣿⢿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠙⣿⣿⣿⣷⣶⣾⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⡿⢁⣼⣃⢿⣿⣿⣿⣿⢉⣠⠆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⢠⣍⡹⠻⣿⣿⣿⣿⣿⣇⠸⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⠃⣼⣿⣗⢸⣿⠟⠁⣨⣿⣿⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢺⣿⣿⣦⣉⠻⣿⣿⣿⣿⠞⢉⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⢂⠹⢿⣿⡈⢏⣴⣾⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢸⣿⣿⣿⣿⣶⣄⣁⣠⣤⣴⣾⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⣶⣶⣬⣩⣥⠾⣿⣿⣿⣿⣿⢘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡗⢺⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                    ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+                `;
+                break;
+            case "help":
+                response =
+                    "Available commands: hello, date, mkdir [name], touch [name], clear";
                 break;
             default:
-                response = `Unknown command: ${input}`;
+                response = `Unknown command: ${command}`;
         }
         TerminalService.emit("response", response);
     };

@@ -7,35 +7,39 @@ use Illuminate\Http\Request;
 
 class LocalDiskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return response()->json(LocalDisk::get());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function storeFolder(Request $request)
     {
-        //
+        $attributes = $request->validate([
+            'name' => ['required', 'max:50'],
+        ]);
+
+        LocalDisk::create([
+            ...$attributes,
+            'type' => 'folder',
+            'parent_id' => 1
+        ]);
+
+        return response()->json(['message' => 'directory created successfully!']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, LocalDisk $localDisk)
+    public function storeFile(Request $request)
     {
-        //
-    }
+        $attributes = $request->validate([
+            'name' => ['required', 'max:50'],
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(LocalDisk $localDisk)
-    {
-        //
+        LocalDisk::create([
+            ...$attributes,
+            'type' => 'file',
+            'parent_id' => 1
+        ]);
+
+        return response()->json(['message' => 'file created successfully!']);
     }
 }

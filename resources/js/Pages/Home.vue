@@ -32,7 +32,9 @@ const { key } = useTerminal();
                 prompt: { class: 'text-green-400 mr-2 font-bold ' },
                 command: { class: 'text-white' },
                 commandText: { class: 'text-white' },
-                response: { class: 'text-gray-400 ml-4' },
+                response: {
+                    class: 'text-gray-400 ml-4 whitespace-pre font-source',
+                },
                 container: {
                     class: 'max-h-[500px] overflow-y-auto custom-scrollbar',
                 },
